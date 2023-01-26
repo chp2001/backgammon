@@ -5,7 +5,7 @@ from src.board import Board
 from src.colour import Colour
 from src.strategies import Strategy
 from src.move_not_possible_exception import MoveNotPossibleException
-
+import time
 
 class ReadOnlyBoard:
     board: Board
@@ -38,6 +38,8 @@ class Game:
             Colour.WHITE: white_strategy,
             Colour.BLACK: black_strategy
         }
+        self.timeout = None
+        self.start_time = None
 
     def run_game(self, verbose=True):
         if verbose:
@@ -47,6 +49,8 @@ class Game:
         moves = []
         full_dice_roll = []
         while True:
+            if self.timeout is not None and time.time() - self.start_time >= self.timeout:
+                raise Exception("Timeout")
             previous_dice_roll = full_dice_roll.copy()
             dice_roll = [randint(1, 6), randint(1, 6)]
             if dice_roll[0] == dice_roll[1]:

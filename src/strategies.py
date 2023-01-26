@@ -6,10 +6,17 @@ from src.move_not_possible_exception import MoveNotPossibleException
 
 class Strategy:
     def move(self, board, colour, dice_roll, make_move, opponents_activity):
-        raise NotImplemented()
+        if not hasattr(self, 'move'):
+            raise NotImplemented()
 
     def game_over(self, opponents_activity):
         pass
+
+    def __str__(self):
+        if hasattr(self, '__name__'):
+            return self.__name__
+        else:
+            return self.__class__.__name__
 
 
 class MoveFurthestBackStrategy(Strategy):

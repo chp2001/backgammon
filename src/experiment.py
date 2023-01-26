@@ -51,18 +51,50 @@ class Experiment:
     def get_white_wins(self):
         return sum(1 for x in self.__results if x[1] == Colour.WHITE)
 
+    def get_data(self,prefix=""):
+        res = {}
+        res = ""
+        for i in dir(self):
+            if i.startswith("__"):
+                continue
+            if (i.startswith(prefix)):
+                res+=i + " = " + str(getattr(self, i)) + "\n"
+            continue
+            if not i.startswith("_"):
+                res[i] = getattr(self, i)
+            else:
+                #j = i.replace("__", "")
+                j=i
+                classString = str(self.__class__)
+                #classString.replace("_", "")
+                #_Experiment__
+                prepend = '_'
+                append = '__'
+                classString = prepend + classString + append
+                if classString in j:
+                    j = j.replace(classString, "")
+                    res[j] = getattr(self, i)
+        return res
+        
+
 
 class GamePlayer:
     def __init__(self, white_strategy, black_strategy):
         self.__white_strategy = white_strategy
         self.__black_strategy = black_strategy
 
-    def __call__(self, game_index):
+    def __call__(self, game_index, timeout = 0):
         print(".", end="")
         game = Game(
             white_strategy=self.__white_strategy,
             black_strategy=self.__black_strategy,
             first_player=Colour(randint(0, 1))
         )
-        game.run_game(verbose=False)
+        if timeout > 0:
+            game.timeout = timeout
+            game.start_time = time.time()
+        try: 
+            game.run_game(verbose=False)
+        except:
+            return game.who_started(), None
         return game.who_started(), game.who_won()

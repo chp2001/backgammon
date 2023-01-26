@@ -4,8 +4,8 @@ from src.experiment import Experiment
 
 experiment = Experiment(
     games_to_play=100,
-    white_strategy=MoveFurthestBackStrategy(),
-    black_strategy=CompareAllMoves()
+    white_strategy=CompareAllMovesWeightingDistance(),
+    black_strategy=CompareAllMovesWeightingDistanceAndSingles()
 )
 if __name__ == '__main__':
     experiment.run()

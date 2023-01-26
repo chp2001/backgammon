@@ -1,5 +1,11 @@
-from src.compare_all_moves_strategy import CompareAllMovesSimple
+from src.compare_all_moves_strategy import CompareAllMovesSimple, \
+    CompareAllMovesWeightingDistanceAndSingles, \
+        CompareAllMovesWeightingDistanceAndSinglesWithEndGame, \
+            CompareAllMovesWeightingDistance
 from src.strategies import MoveFurthestBackStrategy, HumanStrategy, MoveRandomPiece
+from src.anderson import player1_anderson,player2_anderson
+from src.bcperry2 import player1_bcperry2, player2_bcperry2, AIBuilder_bcperry2
+
 
 
 class StrategyFactory:
@@ -17,6 +23,14 @@ class StrategyFactory:
             MoveRandomPiece,
             MoveFurthestBackStrategy,
             CompareAllMovesSimple,
+            player1_anderson,
+            player2_anderson,
+            CompareAllMovesWeightingDistanceAndSinglesWithEndGame,
+            CompareAllMovesWeightingDistanceAndSingles,
+            CompareAllMovesWeightingDistance,
             HumanStrategy,
+            player1_bcperry2,
+            player2_bcperry2,
+            AIBuilder_bcperry2,
         ]
         return strategies
