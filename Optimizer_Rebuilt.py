@@ -419,7 +419,9 @@ class PopulationManager:
         if not self.uptodate:
             self.getBuilderData()
         builders = self.parent.dataManager.getBuildersByGames()
-        builders = self.filterOutMaxGames(builders, self.targetGames)
+        builders = self.filterOutMaxGames(builders, self.targetMaxGames)
+        if len(builders) == 0:
+            return random.choice([0, 0, 0, 0, 1])
         if len(builders) < self.targetActiveBuilders:
             return self.targetActiveBuilders - len(builders)
         return 0
