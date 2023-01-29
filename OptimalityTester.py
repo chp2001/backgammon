@@ -28,7 +28,7 @@ def loadObituary():
 def saveObituary():
     global obituary
     with open("obituary.json", "w") as f:
-        json.dump(obituary, f)
+        json.dump(obituary, f, indent=4)
 def firstIndex(iterable, condition=bool):
     for i, item in enumerate(iterable):
         if condition(item):
@@ -67,6 +67,10 @@ class Result:
             return False
         return self.white == other.white and self.black == other.black and \
             self.res == other.res and self.time == other.time
+    @staticmethod
+    def fromStr(string:str):
+        white, black, res, time = string.split(",")
+        return Result(white, black, bool(res), float(time))
 def loadResult(res:str):
     white, black, result, time = res.split(",")
     return Result(white, black, bool(result), float(time))

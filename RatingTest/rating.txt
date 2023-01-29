@@ -1,0 +1,1 @@
+trueskill.Rating(mu=39.356, sigma=1.840)
