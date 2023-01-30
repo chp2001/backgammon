@@ -420,8 +420,8 @@ class PopulationManager:
             self.getBuilderData()
         builders = self.parent.dataManager.getBuildersByGames()
         builders = self.filterOutMaxGames(builders, self.targetMaxGames)
-        if len(builders) == 0:
-            return random.choice([0, 0, 0, 0, 1])
+        if self.targetActiveBuilders - len(builders) == 0:
+            return 1
         if len(builders) < self.targetActiveBuilders:
             return self.targetActiveBuilders - len(builders)
         return 0
@@ -439,6 +439,8 @@ class PopulationManager:
             for i in range(amt):
                 self.repopulate()
             self.getBuilderData()
+        else:
+            self.repopulate()
     def repopulate(self)->None:
         #two types of repopulation: random off of population, random off of best
         #random off of population
