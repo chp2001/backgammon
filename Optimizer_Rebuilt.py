@@ -27,16 +27,16 @@ def configStartRating(percentile:float):
     mu = mu + (percentile - 0.5) * sigma
     return trueskill.Rating(mu, sigma)
 AIStartRatings = {
-    "MoveRandomPiece": configStartRating(0.1),
-    "MoveFurthestBackStrategy": configStartRating(0.6),
-    "CompareAllMovesSimple": configStartRating(0.3),
-    "player1_anderson": configStartRating(0.5),
-    "player2_anderson": configStartRating(0.5),
-    "CompareAllMovesWeightingDistanceAndSinglesWithEndGame": configStartRating(0.7),
-    "CompareAllMovesWeightingDistanceAndSingles": configStartRating(0.6),
+    #"MoveRandomPiece": configStartRating(0.1),
+    #"MoveFurthestBackStrategy": configStartRating(0.6),
+    #"CompareAllMovesSimple": configStartRating(0.3),
+    #"player1_anderson": configStartRating(0.5),
+    #"player2_anderson": configStartRating(0.5),
+    #"CompareAllMovesWeightingDistanceAndSinglesWithEndGame": configStartRating(0.7),
+    #"CompareAllMovesWeightingDistanceAndSingles": configStartRating(0.6),
     "CompareAllMovesWeightingDistance": configStartRating(0.5),
-    "player1_bcperry2": configStartRating(0.6),
-    "player2_bcperry2": configStartRating(0.5),
+    #"player1_bcperry2": configStartRating(0.6),
+    #"player2_bcperry2": configStartRating(0.5),
 }
 AINames = list(AIStartRatings.keys())
 def copyRating(rating:trueskill.Rating):
@@ -76,6 +76,8 @@ def ratingRange()->list[float]:
     for name, rating in AIStartRatings.items():
         rateMin = min(rateMin, rating.mu)
         rateMax = max(rateMax, rating.mu)
+    if rateMin == rateMax:
+        rateMin = 0
     return [rateMin, rateMax]
 temp = ratingRange()
 minRating = temp[0]
@@ -444,6 +446,9 @@ class PopulationManager:
     def repopulate(self)->None:
         #two types of repopulation: random off of population, random off of best
         #random off of population
+        amtRepopable = len(self.filterOutFewGames(list(self.builders.keys())))
+        if amtRepopable < 10:
+            return
         if random.random() < 0.5:
             self.repopulatePopulation()
         else:
@@ -518,6 +523,11 @@ class GameRunner:
         self.dataManager:DataManager = self.parent.dataManager
         self.gameCount = 0
         self.maxGameConcurrent = mp.cpu_count()
+    def calcMaxConcurrent(self)->int:
+        max_cpu = mp.cpu_count()
+        ai_count = len(self.popManager.builders)
+        maxNum = max(max_cpu, ai_count)
+        return maxNum
     def gameTarget(self, builder:Builder)->int:
         targets = []
         for i in AINames:
@@ -538,11 +548,14 @@ class GameRunner:
             return Result(builder.name, black.__class__.__name__, True)
         return Result(builder.name, black.__class__.__name__, False)
     def runGames(self):
+        self.maxGameConcurrent = self.calcMaxConcurrent()
+        print(f"Max {self.maxGameConcurrent};",end="")
         targets = self.popManager.getBuildersNeedingGames(self.maxGameConcurrent)
         targets = [self.parent.builders[i] for i in targets]
         if len(targets) == 0:
             return
-        with mp.Pool(self.maxGameConcurrent) as pool:
+        print(f"Running {len(targets)};",end="")
+        with mp.Pool(mp.cpu_count()) as pool:
             results = pool.map(self.runGame, targets)
         self.parent.addBatch(results)
         self.gameCount += len(results)

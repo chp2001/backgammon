@@ -120,6 +120,8 @@ class AIBuilder_bcperry2(bcperry2_evaluator):
             constArr = name.split("%")
             self.constants = {}
             for i in range(len(constArr)):
+                if i >= len(globalFeatures):
+                    break
                 self.constants[globalFeatures[i]] = float(constArr[i])
         elif constants == None:
             constants = {
