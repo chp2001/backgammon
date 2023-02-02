@@ -449,7 +449,7 @@ class PopulationManager:
         if len(self.builders) < self.targetActiveBuilders:
             print("Not enough builders, adding", self.targetActiveBuilders - len(self.builders), "builders")
             for i in range(self.targetActiveBuilders - len(self.builders)):
-                self.parent.addBuilder(self.parent.createFromConst(self.parent.newBuilder()))
+                self.repopulate()
             self.getBuilderData()
         elif self.needRepopulation():
             amt = self.getBuildersToRepopulate()
@@ -464,8 +464,9 @@ class PopulationManager:
         #random off of population
         amtRepopable = len(self.filterOutFewGames(list(self.builders.keys())))
         if amtRepopable < 10:
+            self.parent.addBuilder(self.parent.createFromConst(self.parent.newBuilder()))
             return
-        if random.random() < 0.5:
+        if random.random() < 0.1:
             self.repopulatePopulation()
         else:
             self.repopulateBest()
@@ -479,10 +480,14 @@ class PopulationManager:
         #add it to the population
         self.parent.addBuilder(builder)
     def repopulateBest(self)->None:
-        #get a list of the best builders
-        builders = self.getRatingPercentile(0.8, below=False)
-        #pick one at random
-        builder = random.choice(builders)
+        self.getBuilderData()
+        #get the best builder
+        builders = self.parent.dataManager.getBuildersByRatingAgnostic()
+        builders2 = [b for b in builders if self.builders[b].gameCount>3]
+        if len(builders2)<1:
+            self.parent.addBuilder(self.parent.createFromConst(self.parent.newBuilder()))
+            return
+        builder = builders2[0]
         #get their constants
         constants = self.builders[builder].getConstantsList()
         #add some noise to it
