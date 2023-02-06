@@ -97,7 +97,7 @@ class OrderAgnosticRating:
     def getRating(self):
         if self.count == 0:
             return 0
-        return 10*self.rating / self.count
+        return 10*self.rating / self.count + math.floor(math.sqrt(self.count))
     def __str__(self):
         return "%s,%s" % (self.rating, self.count)
     def __repr__(self):
@@ -483,7 +483,7 @@ class PopulationManager:
         self.getBuilderData()
         #get the best builder
         builders = self.parent.dataManager.getBuildersByRatingAgnostic()
-        builders2 = [b for b in builders if self.builders[b].gameCount>3]
+        builders2 = [b for b in builders if self.builders[b].gameCount>30]
         if len(builders2)<1:
             self.parent.addBuilder(self.parent.createFromConst(self.parent.newBuilder()))
             return
@@ -558,6 +558,8 @@ class GameRunner:
         temp = [i[0] for i in targets if i[1] == targets[0][1]]
         return random.choice(temp)
     def useBuilderForGames(self, builder:Builder)->bool:
+        if builder.gameCount > self.popManager.targetMaxGames:
+            return False
         if builder.gameCount < 5:
             return True
         if builder.gameCount > 5 and builder.win == 0:
