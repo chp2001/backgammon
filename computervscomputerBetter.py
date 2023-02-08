@@ -18,18 +18,20 @@ if __name__ == '__main__':
         strategy_index1 = 10
     else:
         pass#strategy_index1 = int(input('Pick strategy 1:\n'))
-
-    chosen_strategy1 = AIBuilder_bcperry2("0.48%0.30%0.50%-0.53%-1.59%0.39%0.28%-0.12%0.04%-0.15")
+    curBest = "-1.59%0.05%0.37%-1.75%-0.14%0.80%0.51%0.02"
+    chosen_strategy1 = AIBuilder_bcperry2(curBest)
+    rqualVal = [-6.4,-11.5,6.3,0.2,2.1,0.3,7.2,2.7]
+    chosen_strategy2 = AIBuilder_bcperry2("%".join([f"{x:.2f}" for x in rqualVal]))
 
     if override:
         strategy_index2 = 8
     else:
-        strategy_index2 = int(input('Pick strategy 2:\n'))
+        pass#strategy_index2 = int(input('Pick strategy 2:\n'))
 
-    chosen_strategy2 = StrategyFactory.create_by_name(strategies[strategy_index2].__name__)
+    #chosen_strategy2 = StrategyFactory.create_by_name(strategies[strategy_index2].__name__)
 
     experiment = Experiment(
-        100,
+        300,
         white_strategy=chosen_strategy1,
         black_strategy=chosen_strategy2,
     )

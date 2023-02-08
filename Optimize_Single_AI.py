@@ -539,6 +539,9 @@ class GameRunner:
         temp = [i[0] for i in targets if i[1] == targets[0][1]]
         return random.choice(temp)
     def useBuilderForGames(self, builder:Builder)->bool:
+        targetNum = 50
+        if builder.gameCount > targetNum:
+            return False
         if builder.gameCount < 5:
             return True
         if builder.gameCount > 5 and builder.win == 0:
@@ -653,16 +656,7 @@ class BuilderPool:
 
         
 if __name__ == "__main__":
-    rquallConst = [
-        -9.0,
-        -7.0,
-        5.5,
-        0.2,
-        1.8,
-        0.1,
-        8.9,
-        2.6
-        ]
+    rquallConst = [-6.4,-11.5,6.3,-0.2,2.1,0.3,7.2,2.7]
     optPool = BuilderPool(firstStartConst=rquallConst)
     optPool.save()
     #print(optPool.activeBuilders)
