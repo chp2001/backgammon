@@ -1,15 +1,24 @@
 # Play backgammon
-from src.compare_all_moves_strategy import CompareAllMovesWeightingDistance, CompareAllMovesWeightingDistanceAndSingles
+from src.compare_all_moves_strategy import *
+from src.strategies import *
 from src.experiment import Experiment
+from src.bcperry2 import player1_bcperry2, player2_bcperry2
 
 experiment = Experiment(
-    games_to_play=100,
-    white_strategy=MoveFurthestBackStrategy(),
-    black_strategy=CompareAllMoves()
+    games_to_play=300,
+    white_strategy=player2_bcperry2(),
+    black_strategy=CompareAllMovesWeightingDistance()
+)
+experiment2 = Experiment(
+    games_to_play=300,
+    white_strategy=player2_bcperry2(),
+    black_strategy=MoveFurthestBackStrategy()
 )
 if __name__ == '__main__':
     experiment.run()
     experiment.print_results()
+    experiment2.run()
+    experiment2.print_results()
 
 
 # Null hypothesis is that the strategies equally good
