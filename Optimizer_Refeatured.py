@@ -446,6 +446,7 @@ class PopulationManager:
     def managePopulation(self)->None:
         if not self.uptodate:
             self.getBuilderData()
+        return
         if len(self.builders) < self.targetActiveBuilders:
             print("Not enough builders, adding", self.targetActiveBuilders - len(self.builders), "builders")
             for i in range(self.targetActiveBuilders - len(self.builders)):
